@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createFileAsync = exports.createFile = exports.db_name = void 0;
+exports.createFileSync = exports.createFile = exports.db_name = void 0;
 const fs_1 = __importDefault(require("fs"));
 const errors_1 = require("./errors");
 exports.db_name = "./datafile.daj.db";
@@ -15,7 +15,7 @@ function createFile(callback, daj) {
         fs_1.default.appendFile(exports.db_name, "", (err) => {
             if (err) {
                 console.error(err);
-                callback(Errors.notDataAccess, null);
+                callback(errors_1.errors.notDataAccess, null);
             }
             else {
                 console.log(`The data file does create.`);
@@ -31,7 +31,7 @@ exports.createFile = createFile;
 //
 //createFileAsync
 //
-function createFileAsync(daj) {
+function createFileSync(daj) {
     if (!fs_1.default.existsSync(exports.db_name)) {
         try {
             fs_1.default.appendFileSync(exports.db_name, "");
@@ -44,7 +44,7 @@ function createFileAsync(daj) {
         }
     }
     else {
-        return daj.getAllAsync();
+        return daj.getAllSync();
     }
 }
-exports.createFileAsync = createFileAsync;
+exports.createFileSync = createFileSync;

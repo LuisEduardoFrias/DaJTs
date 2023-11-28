@@ -1,5 +1,5 @@
 //
-export type Data = object | null
+export type Data = object | string | null
 export type Error = string | null
 //
 export default interface Response {

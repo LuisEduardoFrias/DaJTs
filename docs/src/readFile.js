@@ -18,7 +18,7 @@ function readFile(callback) {
             let newObj = {};
             let isError = false;
             try {
-                newObj = JSON.parse((0, locks_1.desencript)(data));
+                newObj = JSON.parse((0, locks_1.desencript)(data.toString()));
             }
             catch (err) {
                 isError = true;

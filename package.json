@@ -10,6 +10,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^20.10.0",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "guid-typescript": "^1.0.9"
   }
 }

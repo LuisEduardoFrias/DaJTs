@@ -1,16 +1,16 @@
 import Credential from "./credential";
 import Token from "./token";
-import DajB from "./dajb";
+import DajB from "./daj";
 //
 export default class User extends DajB {
   user: string;
   password: string;
-  private toke: Token | null;
+  private token: Token | null;
   
   constructor(credential: Credential) {
     super();
     this.user = credential.user;
     this.password = credential.password;
-    this.toke = null;
+    this.token = null;
   }
 }

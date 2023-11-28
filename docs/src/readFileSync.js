@@ -7,21 +7,21 @@ const locks_1 = require("./locks");
 const createFile_1 = require("./createFile");
 const errors_1 = require("./errors");
 const fs_1 = __importDefault(require("fs"));
-function readFileAsync() {
+function readFileSync() {
     try {
         const data = fs_1.default.readFileSync(createFile_1.db_name);
         try {
-            return { response: null, data: JSON.parse((0, locks_1.desencript)(data)) };
+            return { error: null, data: JSON.parse((0, locks_1.desencript)(data.toString())) };
         }
         catch (err) {
             console.log(err);
-            return { response: errors_1.errors.notData, data: null };
+            return { error: errors_1.errors.notData, data: null };
         }
     }
     catch (err) {
         console.log(err);
-        return { response: errors_1.errors.notDataAccess, data: null };
+        return { error: errors_1.errors.notDataAccess, data: null };
     }
 }
-exports.default = readFileAsync;
+exports.default = readFileSync;
 ;

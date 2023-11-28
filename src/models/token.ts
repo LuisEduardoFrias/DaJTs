@@ -1,9 +1,9 @@
-import { Guid } from "js-guid";
+import { Guid } from "guid-typescript";
 //
 export default class Token {
-	token: string;
+	token: string | null;
 	//
 	constructor() {
-		this.token = Guid.newGuid().StringGuid;
+		this.token = Guid.create().toString();
 	}
 }

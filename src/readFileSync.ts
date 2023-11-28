@@ -4,17 +4,17 @@ import { errors } from "./errors";
 import Response from "./models/response"; 
 import fs from "fs";
 
-export default function readFileAsync(): Response { 
+export default function readFileSync(): Response { 
  try { 
   const data = fs.readFileSync(db_name);
   try {
-   return { response: null, data: JSON.parse(desencript(data)) };
+     return { error: null, data: JSON.parse(desencript(data.toString())) };
   } catch (err:any) {
    console.log(err);
-   return { response: errors.notData, data: null };
+   return { error: errors.notData, data: null };
   }
  } catch (err:any) {
   console.log(err); 
-  return { response: errors.notDataAccess, data: null }; 
+  return { error: errors.notDataAccess, data: null }; 
  } 
 };

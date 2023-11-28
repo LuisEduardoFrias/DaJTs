@@ -4,7 +4,7 @@ import { errors } from "./errors";
 import fs from "fs";
 import Response from "./models/response";
 //
-export default function writeFileSync(data): Response {
+export default function writeFileSync(data:object): Response {
  try {
 		fs.writeFileSync(db_name, encript(JSON.stringify(data)));
 		return { error:null, data: "Success" };

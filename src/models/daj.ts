@@ -1,13 +1,14 @@
 "use strict";
  
-import { Guid } from "js-guid";
+import { Guid } from "guid-typescript";
 
 //Data Archive Json
 export default abstract class DajB {
   key: string;
 
   constructor(identity: boolean = true) {
-    if (identity) this.key = Guid.newGuid().StringGuid;
+    if (identity) this.key = Guid.create().toString();
+    else this.key = "";
   }
 
   public json() {
@@ -17,7 +18,7 @@ export default abstract class DajB {
     
     const _json: string = JSON.stringify(this);
     
-    delete this.constructor;
+    // delete this.constructor;
     
     return _json;
   }
@@ -30,11 +31,11 @@ export default abstract class DajB {
   public mapper(obj: object) {
     const keys = Reflect.ownKeys(obj);
     keys.forEach(key => {
-      Reflect.set(this, key, obj[key]);
+      Reflect.set(this, key, Reflect.get(obj,key));
     });
   }
 
-  static getInstance<T extends dajb>(
+  static getInstance<T extends DajB>(
     this: new (...args: any[]) => T,
     ...args: any[]
   ): T {

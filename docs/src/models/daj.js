@@ -1,18 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const js_guid_1 = require("js-guid");
+const guid_typescript_1 = require("guid-typescript");
 //Data Archive Json
 class DajB {
     constructor(identity = true) {
         if (identity)
-            this.key = js_guid_1.Guid.newGuid().StringGuid;
+            this.key = guid_typescript_1.Guid.create().toString();
+        else
+            this.key = "";
     }
     json() {
         Reflect.set(this, "constructor", {
             name: this.constructor.name,
         });
         const _json = JSON.stringify(this);
-        delete this.constructor;
+        // delete this.constructor;
         return _json;
     }
     parse(json) {
@@ -22,7 +24,7 @@ class DajB {
     mapper(obj) {
         const keys = Reflect.ownKeys(obj);
         keys.forEach(key => {
-            Reflect.set(this, key, obj[key]);
+            Reflect.set(this, key, Reflect.get(obj, key));
         });
     }
     static getInstance(...args) {
