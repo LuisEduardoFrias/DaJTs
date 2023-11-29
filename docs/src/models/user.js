@@ -10,7 +10,9 @@ class User extends daj_1.default {
         super();
         this.user = credential.user;
         this.password = credential.password;
-        this.token = null;
+        this._token = null;
     }
+    get token() { return this._token; }
+    set token(token) { this._token = token; }
 }
 exports.default = User;

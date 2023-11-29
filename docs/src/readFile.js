@@ -4,15 +4,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const locks_1 = require("./locks");
-const createFile_1 = require("./createFile");
+const config_1 = require("../config");
 const errors_1 = require("./errors");
 const fs_1 = __importDefault(require("fs"));
 //
 function readFile(callback) {
-    fs_1.default.readFile(createFile_1.db_name, (err, data) => {
+    fs_1.default.readFile(config_1.DB_NAME, (err, data) => {
         if (err) {
             console.error(err);
-            callback(errors_1.errors.notDataAccess, null);
+            callback(errors_1.errors.notDataAccess("readFile", 12), null);
         }
         else {
             let newObj = {};
@@ -23,7 +23,7 @@ function readFile(callback) {
             catch (err) {
                 isError = true;
                 console.error(err);
-                callback(errors_1.errors.notData, null);
+                callback(errors_1.errors.notData("readFile", 21), null);
             }
             if (!isError)
                 callback(null, newObj);

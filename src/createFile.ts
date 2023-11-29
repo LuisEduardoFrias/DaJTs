@@ -5,17 +5,15 @@ import { errors } from "./errors";
 import {Callback} from "./models/callback";
 import Response from "./models/response";
 import Daj from "./gateway";
-
-export const db_name: string = "./datafile.daj.db";
+import { DB_NAME, IS_DEVELOPMENT } from '../config';
 //
 // createFile
 //
 export function createFile(callback: Callback, daj: Daj) : void {
-  if (!fs.existsSync(db_name)) {
-    fs.appendFile(db_name, "", (err:any) => {
+  if (!fs.existsSync(DB_NAME)) {
+    fs.appendFile(DB_NAME, "", (err:any) => {
       if (err) {
-        console.error(err);
-        callback(errors.notDataAccess, null);
+        callback(errors.notDataAccess("createFile",17), null);
       } else {
         console.log(`The data file does create.`);
         callback(null, null);
@@ -29,14 +27,13 @@ export function createFile(callback: Callback, daj: Daj) : void {
 //createFileAsync
 //
 export function createFileSync(daj: Daj): Response {
-  if (!fs.existsSync(db_name)) {
+  if (!fs.existsSync(DB_NAME)) {
     try {
-      fs.appendFileSync(db_name, "");
+      fs.appendFileSync(DB_NAME, "");
       console.log(`The data file does create.`);
       return { error: null, data: null };
     } catch (err:any) {
-      console.error(err);
-      throw new TypeError(errors.notDataAccess);
+      throw new TypeError(errors.notDataAccess("createFileSync", 38));
     }
   } else {
     return daj.getAllSync();

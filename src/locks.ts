@@ -1,12 +1,14 @@
 /** @format */
 "use strict";
-
 import crypto from "crypto";
+import { LOCK } from '../config';
 import { Buffer } from "buffer";
 
 const key = "h@u37.jd7J&#8Jsi^##>(+.:#hshqpb";
 
 function code(str: string): string {
+ if(!LOCK) return str;
+ 
 	let _str: string = btoa(str);
 
 	const output: any[] = [];
@@ -18,6 +20,8 @@ function code(str: string): string {
 }
 
 function encode(str: string): string {
+ if(!LOCK) return str;
+ 
 	let _str: String = new String(str);
 	let binString: string = "";
 
@@ -29,6 +33,8 @@ function encode(str: string): string {
 }
 
 export function encript(text: string): string {
+ if(!LOCK) return text;
+ 
 	const iv: any = crypto.randomBytes(16);
 	const encription: any = crypto.createCipheriv(
 		"aes-256-cbc",
@@ -41,6 +47,8 @@ export function encript(text: string): string {
 }
 
 export function desencript(text: string): string {
+ if(!LOCK) return text;
+ 
 	const piece: any = encode(text).split(":");
 	const iv: any = Buffer.from(piece[0], "hex");
 	const cifrado: any = Buffer.from(piece[1], "hex");

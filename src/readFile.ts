@@ -1,15 +1,14 @@
 import { encript, desencript } from "./locks";
-import { db_name } from "./createFile";
+import { DB_NAME } from '../config';
 import { errors } from "./errors";
 import fs from "fs";
 import {Callback} from "./models/callback";
 //
 export default function readFile (callback: Callback) : void
 {
- fs.readFile(db_name, (err: any, data: any) => {
+ fs.readFile(DB_NAME, (err: any, data: any) => {
 			if (err) {
-				console.error(err);
-				callback(errors.notDataAccess, null);
+				callback(errors.notDataAccess("readFile", 12), null);
 			} else {
 				let newObj: object = {};
 				let isError: boolean = false;
@@ -17,8 +16,7 @@ export default function readFile (callback: Callback) : void
 					newObj = JSON.parse(desencript(data.toString()));
 				} catch (err) {
 					isError = true;
-					console.error(err);
-					callback(errors.notData, null);
+					callback(errors.notData("readFile", 21), null);
 				}
 				if (!isError) callback(null, newObj);
 			}
