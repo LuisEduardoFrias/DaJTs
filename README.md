@@ -1,4 +1,4 @@
-#Inglish
+# Inglish
 
 # DaJTs
 
@@ -15,14 +15,24 @@ The package exposes the following classes, interfaces, and types:
 - `Token`: class type
 
 ### Interfaces:
-- `Response`
+- `Response`: error: Error; data: Data;
+- `Credentials`: user: string; password: string;
 
 ### Types:
 - `Callback`: function `(error: Error, data: Data) => void`
 - `Data`: object, string, null
 - `Error`: string, null
 
-Create models using the abstract class 'DajB'.
+## ***Create the models using the abstract class 'DajB'..**
+
+The models that extend from the DajB acquire the following properties and methods:
+
+- `key 'property'`: string.
+- `super 'constructor'`: accepts a boolean indicating whether the key is automatically generated with a GUID or manually.
+- `json 'method'`: converts the object into a JSON.
+- `parse 'method'`: receives a JSON value and maps it to itself.
+- `mapper 'method'`: receives an object that is mapped to itself.
+- `getInstance 'method'`: generates a blank instance if the parameters are not provided.
 
 **Examples:**
 
@@ -39,6 +49,17 @@ class Person extends DajB {
     this.age = age;
   }
 }
+
+const doctor = new Person("Jose", 32);
+console.log(doctor); 
+/* 
+{ 
+ key: "2h0e3y9e-372a-4f2b-b7f8-2cd73d19a6e1"
+ name: "Jose",
+ age: 32
+}
+*/
+
 ````
 
 Use the 'daj' class, which is an instance, with any of the methods that are similar to HTTP methods:
@@ -140,7 +161,8 @@ const credentials: Credentials = {
 
 const user_token: Token = daj.loginSync(credentials);
 
-console.log(user_token.token)   // 7d5a3b9e-572a-4f9b-b3f8-2c8e5d19a6e1
+console.log(user_token.token)   
+// 7d5a3b9e-572a-4f9b-b3f8-2c8e5d19a6e1
 // Tokens are GUID (Globally Unique Identifier).
 
 // Validating the token
@@ -174,14 +196,24 @@ El paquete expone las siguientes clases, interfaces y tipos:
 - `Token`: tipo de clase
 
 ### Interfaces:
-- `Response`
-
+- `Response`: error: Error; data: Data;
+- `Credentials`: user: string; password: string;
+- 
 ### Tipos:
 - `Callback`: función `(error: Error, data: Data) => void`
 - `Data`: object, string, null
 - `Error`: string, null
 
-Crea los modelos usando la clase abstracta 'DajB'.
+## ***Crea los modelos usando la clase abstracta 'DajB'.***
+
+Los modelos que extiendan del DajB arquiere la siquiente propiedad y metodos.
+
+- `key 'propiedad'`: string.
+- `super 'constructor'`: acepta un boolean que indica si el key se genera automaticamen con un GUID o manual.
+- `json 'metodo'`: convierte el objecto en un json.
+- `parse 'metodo'`: recive un valor json y lo mappea a si mismo.
+- `mapper 'metodo'`: recive un objecto que es mappeado a si mismo.
+- `getInstance 'metodo'`: genera un instamcia em blanco si no se proporcional los parametros.
 
 **Ejemplo:**
 
