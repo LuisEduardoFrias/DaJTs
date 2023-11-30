@@ -142,15 +142,21 @@ class Daj {
         (0, readFile_1.default)((error, data) => {
             if (!error) {
                 const objects = Reflect.get(data, Reflect.get(obj, "constructor").name);
+                let isnotfound = true;
                 for (let props in objects) {
-                    if (Reflect.get(Reflect.get(objects, props), key) === key) {
+                    const _obj_ = Reflect.get(objects, props);
+                    if (Reflect.get(_obj_, "key") === key) {
                         callback(null, Reflect.get(objects, props));
+                        isnotfound = false;
+                        break;
                     }
                 }
+                if (isnotfound)
+                    callback(errors_1.errors.keyNotFound("gateway", 196), null);
             }
             else {
-                console.error(errors_1.errors.notData("gateway", 197));
-                callback(errors_1.errors.notData("gateway", 198), null);
+                //console.error(errors.notData("gateway",197));
+                callback(errors_1.errors.notData("gateway", 199), null);
             }
         });
     }
@@ -161,9 +167,11 @@ class Daj {
         const { error, data } = (0, readFileSync_1.default)();
         if (!error) {
             const value = Reflect.get(data, Reflect.get(obj, "constructor").name);
-            for (var arr in value) {
-                if (value[arr].key === key) {
-                    return { error: null, data: value[arr] };
+            for (let props in value) {
+                const _obj_ = Reflect.get(value, props);
+                if (Reflect.get(_obj_, "key") === key) {
+                    return { error: null, data: _obj_ };
+                    break;
                 }
             }
             return { error: errors_1.errors.notData("gateway", 219), data: null };
@@ -178,19 +186,25 @@ class Daj {
     post(callback, obj) {
         const { objIsArray, constructor_name } = this.checkIsArray(obj);
         (0, createFile_1.createFile)((error, data) => {
-            const allData = data;
+            let allData = data === null || typeof data === "object" ? data : {};
             function setAllData(objData, isNewProtype = false) {
-                if (isNewProtype) {
-                    objData = [objData];
+                const aux = [];
+                const auxAllData = {};
+                if (isNewProtype)
+                    aux.push(objData);
+                try {
+                    !Reflect.set(isNewProtype ? auxAllData : allData, constructor_name, isNewProtype ? aux : objData);
+                    if (isNewProtype)
+                        allData = auxAllData;
                 }
-                if (!Reflect.set(allData, constructor_name, objData)) {
+                catch (err) {
                     callback(errors_1.errors.notAdd("gateway", 244), null);
                     return false;
                 }
                 return true;
             }
             let isError = false;
-            if (error !== null) {
+            if (error === null) {
                 if (allData !== null) {
                     const specificObj = Reflect.get(allData, constructor_name);
                     if (specificObj !== undefined) {
@@ -222,7 +236,7 @@ class Daj {
                 if (!isError) {
                     (0, writeFile_1.default)(allData, (error, _) => {
                         if (error) {
-                            console.log(error);
+                            //console.log(error);
                             callback(errors_1.errors.notDataAccess("gateway", 287), null);
                             isError = true;
                         }
@@ -238,16 +252,22 @@ class Daj {
     //
     postSync(obj) {
         const { objIsArray, constructor_name } = this.checkIsArray(obj);
-        const { error, data: allData } = (0, createFile_1.createFileSync)(this);
+        const { error, data } = (0, createFile_1.createFileSync)(this);
+        let allData = data === null || typeof data === "object" ? data : {};
         if (error !== null)
             return { error: error, data: null };
         function setAllData(objData, isNewProtype = false) {
-            if (isNewProtype) {
-                objData = [objData];
+            const aux = [];
+            const auxAllData = {};
+            if (isNewProtype)
+                aux.push(objData);
+            try {
+                !Reflect.set(isNewProtype ? auxAllData : allData, constructor_name, isNewProtype ? aux : objData);
+                if (isNewProtype)
+                    allData = auxAllData;
             }
-            console.log(JSON.stringify(objData));
-            if (!Reflect.set(allData, constructor_name, objData)) {
-                console.log(errors_1.errors.notAdd("gateway", 321));
+            catch (err) {
+                console.log(err);
                 //Todo este valor de retorno, se esta tomado en cuenta
                 return { error: errors_1.errors.notAdd("gateway", 323), data: null };
             }
@@ -289,7 +309,7 @@ class Daj {
             };
         }
         else {
-            console.log(error);
+            //console.log(error);
             return { error: errors_1.errors.notData("gateway", 363), data: null };
         }
     }
@@ -424,7 +444,7 @@ class Daj {
                 if (!isError) {
                     (0, writeFile_1.default)(allData, (error, _) => {
                         if (error) {
-                            console.log(error);
+                            //console.log(error);
                             callback(errors_1.errors.notDataAccess("gateway", 519), null);
                             isError = true;
                         }
@@ -441,7 +461,7 @@ class Daj {
     //
     //method  delete async
     //
-    deleteAsync(obj) {
+    deleteSync(obj) {
         let constructor_name = Reflect.get(obj, "constructor").name;
         Reflect.deleteProperty(obj, "constructor");
         const { error, data: allData } = this.getAllSync();

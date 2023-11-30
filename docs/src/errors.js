@@ -12,8 +12,8 @@ exports.errors = {
     notData(file, row) {
         return `DaJ; ${config_1.IS_DEVELOPMENT && `${file}, row: ${row}`} Error: No data found`;
     },
-    key(file, row) {
-        return `DaJ; ${config_1.IS_DEVELOPMENT && `${file}, row: ${row}`} Error: A 'key' value is required.`;
+    keyNotFound(file, row) {
+        return `DaJ; ${config_1.IS_DEVELOPMENT && `${file}, row: ${row}`} Error: 'key' is not found.`;
     },
     notDataAccess(file, row) {
         return `DaJ; ${config_1.IS_DEVELOPMENT && `${file}, row: ${row}`} Error: No access to data file.`;

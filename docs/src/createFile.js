@@ -14,7 +14,6 @@ function createFile(callback, daj) {
     if (!fs_1.default.existsSync(config_1.DB_NAME)) {
         fs_1.default.appendFile(config_1.DB_NAME, "", (err) => {
             if (err) {
-                console.error(err);
                 callback(errors_1.errors.notDataAccess("createFile", 17), null);
             }
             else {
@@ -39,7 +38,6 @@ function createFileSync(daj) {
             return { error: null, data: null };
         }
         catch (err) {
-            console.error(err);
             throw new TypeError(errors_1.errors.notDataAccess("createFileSync", 38));
         }
     }

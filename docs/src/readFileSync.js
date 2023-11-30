@@ -14,12 +14,10 @@ function readFileSync() {
             return { error: null, data: JSON.parse((0, locks_1.desencript)(data.toString())) };
         }
         catch (err) {
-            console.log(err);
             return { error: errors_1.errors.notData("readFileSync", 14), data: null };
         }
     }
     catch (err) {
-        console.log(err);
         return { error: errors_1.errors.notDataAccess("readFileSync", 18), data: null };
     }
 }

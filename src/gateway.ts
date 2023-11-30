@@ -187,15 +187,24 @@ export default class Daj {
 					data as object,
 					Reflect.get(obj, "constructor").name
 				);
-
+    
+    let isnotfound = true;
+    
 				for (let props in objects) {
-					if (Reflect.get(Reflect.get(objects,props),key) === key) {
+				 const _obj_: object = Reflect.get(objects,props);
+				 
+					if (Reflect.get(_obj_, "key") === key) {
 						callback(null, Reflect.get(objects,props));
+						isnotfound = false;
+						break;
 					}
 				}
+				
+				if(isnotfound)	callback(errors.keyNotFound("gateway",196), null);
+				
 			} else {
 				//console.error(errors.notData("gateway",197));
-				callback(errors.notData("gateway",198), null);
+				callback(errors.notData("gateway",199), null);
 			}
 		});
 	}
@@ -210,13 +219,18 @@ export default class Daj {
 				data as object,
 				Reflect.get(obj, "constructor").name
 			);
-
-			for (var arr in value) {
-				if (value[arr].key === key) {
-					return { error: null, data: value[arr] };
+    
+				for (let props in value) {
+				 const _obj_: object = Reflect.get(value, props);
+				 
+					if (Reflect.get(_obj_, "key") === key) {
+						return { error: null, data: _obj_ };
+						break;
+					}
 				}
-			}
+				
 			return { error: errors.notData("gateway",219), data: null };
+			
 		} else {
 			return { error, data: null };
 		}
@@ -228,31 +242,41 @@ export default class Daj {
 		const { objIsArray, constructor_name } = this.checkIsArray(obj);
 
 		createFile((error: Error, data: Data) => {
-			const allData: object = data as object;
+		 
+			let allData: object | null = data === null || typeof data === "object" ? data : {};
 
 			function setAllData(
 				objData: object,
 				isNewProtype: boolean = false
 			): boolean {
-				if (isNewProtype) {
-					objData = [objData];
-				}
-
-				if (
-					!Reflect.set(allData as object, constructor_name, objData)
-				) {
-					callback(errors.notAdd("gateway",244), null);
-					return false;
-				}
-				return true;
+				const aux: object[] = [];
+			 const auxAllData: object = {};
+			 
+			 if (isNewProtype) aux.push(objData);
+			
+			 try {
+				!Reflect.set(
+					isNewProtype ? auxAllData : allData as object,
+					constructor_name,
+					isNewProtype ? aux : objData
+				)
+				
+			 if (isNewProtype) allData = auxAllData;
+				
+			} catch (err: any) {
+				callback(errors.notAdd("gateway",244), null);
+				return false;
 			}
-
+			 
+			return true;
+		 }
+		
 			let isError: boolean | undefined = false;
 
-			if (error !== null) {
+			if (error === null) {
 				if (allData !== null) {
 					const specificObj: Array<object> = Reflect.get(
-						allData,
+						allData as object,
 						constructor_name
 					);
 
@@ -265,8 +289,8 @@ export default class Daj {
 						isError = !setAllData(specificObj);
 					} else {
 						isError = !setAllData(obj);
-					}
-				} else {
+					}} 
+				else {
 					isError = !setAllData(obj, true);
 				}
 			} else {
@@ -281,16 +305,19 @@ export default class Daj {
 				}
 
 				if (!isError) {
-					writeFile(allData, (error: any, _) => {
-						if (error) {
+					writeFile(allData as object, (error: any, _) => {
+					
+					if (error) {
 							//console.log(error);
-							callback(errors.notDataAccess("gateway",287), null);
-							isError = true;
-						}
-						if (!isError) callback(null, "Success");
-					});
+						callback(errors.notDataAccess("gateway",287), null);
+						isError = true;
+					}
+				
+					if (!isError) callback(null, "Success");
+				});
 				}
 			}
+			
 		}, this);
 	}
 	//
@@ -299,26 +326,32 @@ export default class Daj {
 	public postSync(obj: object): Response {
 		const { objIsArray, constructor_name } = this.checkIsArray(obj);
 
-		const { error, data: allData } = createFileSync(this);
-
+		const { error, data } = createFileSync(this);
+		
+  let allData: object | null = data === null || typeof data === "object" ? data : {};
+  
 		if (error !== null) return { error: error, data: null };
 
 		function setAllData(
 			objData: object,
 			isNewProtype: boolean = false
 		): Response {
-			if (isNewProtype) {
-				objData = [objData];
-			}
-    //console.log(JSON.stringify(objData))
-			if (
+			const aux: object[] = [];
+			const auxAllData: object = {};
+			 
+			if (isNewProtype) aux.push(objData);
+			
+			try {
 				!Reflect.set(
-					allData as object,
+					isNewProtype ? auxAllData : allData as object,
 					constructor_name,
-					objData
+					isNewProtype ? aux : objData
 				)
-			) {
-				//console.log(errors.notAdd("gateway",321));
+				
+			if (isNewProtype) allData = auxAllData;
+				
+			} catch (err: any) {
+				 console.log(err);
 				//Todo este valor de retorno, se esta tomado en cuenta
 				return { error: errors.notAdd("gateway",323), data: null };
 			}
@@ -530,7 +563,7 @@ export default class Daj {
 	//
 	//method  delete async
 	//
-	public deleteAsync(obj: object): Response {
+	public deleteSync(obj: object): Response {
 		let constructor_name = Reflect.get(obj, "constructor").name;
 
 		Reflect.deleteProperty(obj, "constructor");

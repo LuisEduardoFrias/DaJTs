@@ -11,8 +11,8 @@ export const errors = {
   notData(file: string, row: number) { 
    return `DaJ; ${ IS_DEVELOPMENT && `${file}, row: ${row}` } Error: No data found`
   },
-  key(file: string, row: number) {
-   return `DaJ; ${ IS_DEVELOPMENT && `${file}, row: ${row}` } Error: A 'key' value is required.`
+  keyNotFound(file: string, row: number) {
+   return `DaJ; ${ IS_DEVELOPMENT && `${file}, row: ${row}` } Error: 'key' is not found.`
   },
   notDataAccess(file: string, row: number) { 
    return `DaJ; ${ IS_DEVELOPMENT && `${file}, row: ${row}` } Error: No access to data file.`

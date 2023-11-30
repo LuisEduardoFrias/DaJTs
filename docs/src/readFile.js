@@ -11,7 +11,6 @@ const fs_1 = __importDefault(require("fs"));
 function readFile(callback) {
     fs_1.default.readFile(config_1.DB_NAME, (err, data) => {
         if (err) {
-            console.error(err);
             callback(errors_1.errors.notDataAccess("readFile", 12), null);
         }
         else {
@@ -22,7 +21,6 @@ function readFile(callback) {
             }
             catch (err) {
                 isError = true;
-                console.error(err);
                 callback(errors_1.errors.notData("readFile", 21), null);
             }
             if (!isError)

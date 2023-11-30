@@ -1,5 +1,7 @@
-import daj, { DajB } from "./index";
-//
+import daj, { DajB, User, Data, Error, Response, Credentials, Token } from "./index";
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 class Persona extends DajB {
  name:string;
  age: number;
@@ -10,15 +12,36 @@ class Persona extends DajB {
  }
 }
 
-const Persona1 = new Persona("luis",28);
+const person1 = new Persona("luis",28);
+const person2 = new Persona("luis",28);
+const person3 = new Persona("luis",28);
 
-const response = daj.postSync(Persona1);
+const callback = (error: Error, data: Data) => {
+ console.log("callback: "+ error)
+ console.log("callback: "+ JSON.stringify(data));
+}
+
+daj.post(callback, person1);
+// const response = daj.postSync(person1);
+
+// daj.put(callback, person1);
+// const response = daj.postSync(person1);
+
+// daj.delete(callback, person1);
+// const response = daj.deleteSync(person1);
+
+// daj.getAll(callback);
+// const response = daj.getAllSync();
+
+// const response = daj.get(callback);
+// const response = daj.getSync(person1);
+// const response = daj.getByKey(callback);
+// const response = daj.getByKeySync(person1);
 
 console.log(JSON.stringify(response));
 
+// Register
 /*
-import daj, { User, Response, Credentials, Token } from "./index";
-
 class Model_User extends User {
  name: string;
  lastName: string;

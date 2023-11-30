@@ -14,7 +14,6 @@ function writeFileSync(data) {
         return { error: null, data: "Success" };
     }
     catch (err) {
-        console.log(err);
         return { error: errors_1.errors.notDataAccess("writeFileSync", 13), data: null };
     }
 }

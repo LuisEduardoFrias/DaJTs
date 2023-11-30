@@ -135,13 +135,13 @@ class Model_User extends User {
   name: string;
   lastName: string;
   age: number;
-  credentials: Credentials;
   constructor(name: string, lastName: string, age: number, user: string, password: string) {
     super();
     this.name = name;
     this.lastName = lastName;
     this.age = age;
-    this.credentials = { user, password };
+    this.user = user;
+    this.password = password;
   }
 }
 
@@ -302,13 +302,13 @@ class Model_User extends User {
   name: string;
   lastName: string;
   age: number;
-  credentials: Credentials;
   constructor(name: string, lastName: string, age: number, user: string, password: string) {
     super();
     this.name = name;
     this.lastName = lastName;
     this.age = age;
-    this.credentials = { user, password };
+    this.user = user;
+    this.password = password;
   }
 }
 

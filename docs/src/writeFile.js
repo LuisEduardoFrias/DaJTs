@@ -10,7 +10,6 @@ const fs_1 = __importDefault(require("fs"));
 function writeFile(data, callback) {
     fs_1.default.writeFile(config_1.DB_NAME, (0, locks_1.encript)(JSON.stringify(data)), (err) => {
         if (err) {
-            console.log(err);
             callback(errors_1.errors.notDataAccess("writeFile", 11), null);
         }
         else {
