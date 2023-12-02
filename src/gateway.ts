@@ -15,12 +15,26 @@ import writeFile from "./writeFile";
 import writeFileSync from "./writeFileSync";
 import { createFile, createFileSync } from "./createFile";
 //
-type RespCheckIsArray = {
-	objIsArray: boolean;
-	constructor_name: string;
-};
 //
 export default class Daj {
+	//
+	//method get class name
+	//
+	private getCN(obj: any) {
+	 return Reflect.get(obj as object, "constructor").name;
+	}
+	//
+	//method get property
+	//
+	private getPro(obj: any, pro:string) {
+	 return Reflect.get(obj as object, pro);
+	}
+	//
+	//method get property class name
+	//
+	private getProCN(data: any, _object: any) {
+	 return Reflect.get(data as object, this.getCN(_object));
+	}
 	//
 	//method getAll
 	//
@@ -36,11 +50,8 @@ export default class Daj {
 	//
 	//method checkIsArray
 	//
-	private checkIsArray(obj: Data): RespCheckIsArray {
-		let constructor_name: string = Reflect.get(
-			obj as object,
-			"constructor"
-		).name;
+	private checkIsArray(obj: Data): boolean {
+		const constructor_name: string = this.getCN(obj);
 
 		let objIsArray: boolean = false;
 
@@ -49,18 +60,14 @@ export default class Daj {
 		if (constructor_name === "Array") {
 			for (const key in obj as object) {
 				if (Reflect.ownKeys(Reflect.get(obj as object, key))[0] === "constructor") {
-					constructor_name = 
-					Reflect.get(
-					 Reflect.get(
-					  Reflect.get(obj as object, key),
-					  "constructor"),
-					 "name");
+					 
 					objIsArray = true;
 					break;
 				}
 			}
 		}
-		return { objIsArray, constructor_name };
+		
+		return objIsArray;
 	}
 	//
 	//method register
@@ -68,10 +75,13 @@ export default class Daj {
 	public registerSync(obj: User): Response {
 		const { error, data: users } = this.getSync(User.getInstance());
 
-		if (!error && users) {
-			const usersExist = (users as User[]).filter(
-				(u: User) => u.user === obj.user
-			);
+		if (!error) {
+			let usersExist: User[] = [];
+			
+			if(users)
+			 usersExist = (users as User[]).filter(
+				 (u: User) => u.user === obj.user
+			 );
 
 			if (usersExist.length === 1)
 				return { error: errors.userNotExist("gateway",77), data: null };
@@ -81,30 +91,42 @@ export default class Daj {
 		return { error, data: null };
 	}
 	//
+	//method check extende type
+	//
+	private CheckExtendsType(obj: object): string {
+	 const extendsObject: string = Object.getPrototypeOf(Object.getPrototypeOf(obj)).constructor.name;
+  
+	 if(extendsObject === "User")
+	  return extendsObject;
+	 
+	 return this.getCN(obj);
+	}
+	//
 	//method login
 	//
-	public loginSync(credential: Credentials): Token | null {
+	public loginSync(credential: Credentials): Token {
 		const user: User = User.getInstance();
 
 		const { error, data: users } = this.getSync(user);
 
 		if (!error && users) {
+		 
 			const userExist = (users as User[]).filter(
 				(u: User) =>
 					u.user === credential.user && u.password === credential.password
 			);
 
 			if (userExist.length === 1) {
-				Reflect.set(userExist[0],"token", new Token());
+				Reflect.set(userExist[0],"_token", new Token());
 				user.mapper(userExist[0]);
 				const { error, data } = this.putSync(user);
 
-				if (error) return null;
+				if (error) return Token.empty();
 
 				return user.token;
 			}
 		}
-		return null;
+		return Token.empty();
 	}
 	//
 	//method checkToken
@@ -112,11 +134,14 @@ export default class Daj {
 	public checkTokenSync(token: Token): boolean {
 		const { error, data: users } = this.getSync(User.getInstance());
 
-		if (error) return false;
+		if (error && !users) return false;
 
 		const useExist: User[] = (users as User[]).filter(
-			(u: User) => u.token?.token === token.token
-		);
+			(u: User) => {
+			 const newUser = User.getInstance();
+			 newUser.mapper(u);
+			 if(newUser?.token?.token === token.token) return true;
+		});
 
 		if (useExist.length === 1) return true;
 
@@ -156,8 +181,7 @@ export default class Daj {
 			if (!error) {
 				callback(
 					null,
-					Reflect.get(data as object, Reflect.get(obj, "constructor").name)
-				);
+					this.getProCN(data, obj));
 			} else {
 				callback(error, null);
 			}
@@ -172,7 +196,7 @@ export default class Daj {
 		if (!error)
 			return {
 				error: null,
-				data: Reflect.get(data as object, Reflect.get(obj, "constructor").name)
+				data: this.getProCN(data,obj)
 			};
 
 		return { error, data: null };
@@ -183,10 +207,7 @@ export default class Daj {
 	public getByKey(callback: Callback, obj: object, key: string) {
 		readFile((error: Error, data: Data) => {
 			if (!error) {
-				const objects: object = Reflect.get(
-					data as object,
-					Reflect.get(obj, "constructor").name
-				);
+				const objects: object = this.getProCN(data, obj);
     
     let isnotfound = true;
     
@@ -215,10 +236,7 @@ export default class Daj {
 		const { error, data } = readFileSync();
 
 		if (!error) {
-			const value = Reflect.get(
-				data as object,
-				Reflect.get(obj, "constructor").name
-			);
+			const value = this.getProCN(data,obj);
     
 				for (let props in value) {
 				 const _obj_: object = Reflect.get(value, props);
@@ -239,7 +257,8 @@ export default class Daj {
 	//method post
 	//
 	public post(callback: Callback, obj: object) {
-		const { objIsArray, constructor_name } = this.checkIsArray(obj);
+		const objIsArray = this.checkIsArray(obj);
+  const constructor_name = this.CheckExtendsType(obj as object);
 
 		createFile((error: Error, data: Data) => {
 		 
@@ -324,8 +343,9 @@ export default class Daj {
 	//method post async
 	//
 	public postSync(obj: object): Response {
-		const { objIsArray, constructor_name } = this.checkIsArray(obj);
-
+		const objIsArray = this.checkIsArray(obj);
+  const constructor_name = this.CheckExtendsType(obj as object);
+  
 		const { error, data } = createFileSync(this);
 		
   let allData: object | null = data === null || typeof data === "object" ? data : {};
@@ -351,7 +371,7 @@ export default class Daj {
 			if (isNewProtype) allData = auxAllData;
 				
 			} catch (err: any) {
-				 console.log(err);
+				// console.log(err);
 				//Todo este valor de retorno, se esta tomado en cuenta
 				return { error: errors.notAdd("gateway",323), data: null };
 			}
@@ -400,7 +420,8 @@ export default class Daj {
 	//method put
 	//
 	public put(callback: Callback, obj: object) {
-		const { objIsArray, constructor_name } = this.checkIsArray(obj);
+		const objIsArray = this.checkIsArray(obj);
+  const constructor_name = this.CheckExtendsType(obj as object);
 
 		if (objIsArray) {
 			callback(errors.arrayNot("gateway",373), null);
@@ -459,15 +480,15 @@ export default class Daj {
 	//method put async
 	//
 	public putSync(obj: object): Response {
-		const { objIsArray, constructor_name } = this.checkIsArray(obj);
+		const objIsArray = this.checkIsArray(obj);
+  const constructor_name = this.CheckExtendsType(obj as object);
 
 		if (objIsArray) {
 			return { error: errors.arrayNot("gateway",432), data: null };
 		}
 
-		Reflect.deleteProperty(obj, "constructor");
-
 		function replaceEleOfArray(objToReplace: object) {
+			 
 			for (const key in objToReplace) {
 				if (Reflect.get(objToReplace, key).key == Reflect.get(obj, "key")) {
 					Reflect.set(objToReplace, key, obj);
@@ -477,7 +498,7 @@ export default class Daj {
 		}
 
 		const { error, data: allData } = this.getAllSync();
-
+  
 		if (error !== null) return { error, data: null };
 
 		function setAllData(objData: object) {
@@ -513,7 +534,8 @@ export default class Daj {
 	//method delete
 	//
 	public delete(callback: Callback, obj: object) {
-		let constructor_name = Reflect.get(obj, "constructor").name;
+		let constructor_name = this.getCN(obj);
+		
 		Reflect.deleteProperty(obj, "constructor");
 
 		this.getAll((error: Error, allData: Data) => {
@@ -564,7 +586,7 @@ export default class Daj {
 	//method  delete async
 	//
 	public deleteSync(obj: object): Response {
-		let constructor_name = Reflect.get(obj, "constructor").name;
+		let constructor_name = this.getCN(obj);
 
 		Reflect.deleteProperty(obj, "constructor");
 

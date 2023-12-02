@@ -1,84 +1,98 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const index_1 = __importStar(require("./index"));
-//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-class Persona extends index_1.DajB {
-    constructor(name, age) {
-        super();
-        this.name = name;
-        this.age = age;
+const errors_1 = require("./src/errors");
+const index_1 = __importDefault(require("./index"));
+//-------------------------------------------------------
+//Test get all 
+index_1.default.getAll((error, data) => {
+    console.log("Test get all not data access: ");
+    if (error === errors_1.errors.notDataAccess("readFile", 12) && data === null) {
+        console.log(true);
     }
+    else
+        console.log(false);
+});
+console.log("------------------------------------------");
+const responseGetAllSync = index_1.default.getAllSync();
+console.log("Test get all Sync not data access: ");
+if (responseGetAllSync.error === errors_1.errors.notDataAccess("readFileSync", 18) && responseGetAllSync.data === null) {
+    console.log(true);
 }
-const person1 = new Persona("luis", 38);
-const person2 = new Persona("juan", 28);
-const person3 = new Persona("carlos", 18);
-const person4 = new Persona("emilio", 8);
-const person5 = new Persona("johan", 88);
-
-person5.key = "4bb943c5-0387-1df7-7e72-e4cef5cf1393";
-
-const callback = (error, data) => {
-    console.log("callback: " + error);
-    console.log("callback: " + JSON.stringify(data,null,2));
-};
-// index_1.default.post(callback, person4);
-// const response = index_1.default.postSync(person5);
-//index_1.default.put(callback, person5);
-// const response =  index_1.default.postSync(person5);
-//index_1.default.delete(callback, person5);
- //const response =  index_1.default.deleteSync(person5);
-
-// index_1.default.getAll(callback);
-// const response = index_1.default.getAllSync();
-index_1.default.get(callback, person1);
-// const response = index_1.default.getSync(person1);
-// index_1.default.getByKey(callback, person1, "ffd5029f-ae3a-e006-989f-24e1d760c07a");
-// const response = index_1.default.getByKeySync(person1, "a94d85f5-253f-3cdd-d9d6-8f8539e4f0fb");
-
-//config.js console.log(JSON.stringify(response, null,2));
-// Register
+else
+    console.log(false);
+console.log("------------------------------------------");
 /*
+
+class Persona extends DajB {
+ name:string;
+ age: number;
+ constructor(name: string,age: number) {
+  super();
+  this.name = name;
+  this.age = age;
+ }
+}
+
+class Auto extends DajB {
+ marca:string;
+ age: number;
+ color: string;
+ constructor(marca: string,age: number, color: string) {
+  super();
+  this.marca = marca;
+  this.age = age;
+  this.color = color;
+ }
+}
+
+const profesor = new Persona("Jose",31);
+const policia = new Persona("Carlos",28);
+const bombero = new Persona("Manuel",23);
+
+const callback =
+
+daj.post(callback, person1);
+const response = daj.postSync(person1);
+
+daj.put(callback, person1);
+const response = daj.postSync(person1);
+
+daj.delete(callback, person1);
+const response = daj.deleteSync(person1);
+
+
+
+const response = daj.get(callback);
+const response = daj.getSync(person1);
+const response = daj.getByKey(callback);
+const response = daj.getByKeySync(person1);
+
+console.log(JSON.stringify(response));
+
+// Register
+
 class Model_User extends User {
  name: string;
  lastName: string;
  age: number;
- credentials: Credentials;
+ 
  constructor(name: string, lastName: string, age: number, user:string, password:string) {
-  super()
+  const credential: Credentials = { user, password };
+  super(user, password)
+  
   this.name = name;
   this.lastName = lastName;
   this.age = age;
-  this.credentials = { user, password };
  }
 }
 
-const teacher: Model_User = new Model_User("Calor","Felipe",32, "Carlos_Felipe", "Carlos.F.3232");
+const teacher: Model_User = new Model_User("Luis","Frias",29, "LuisEduardoFrias", "EduarLuis941127");
 
 //registrando usuairo
-const {error, data} = index_1.default.registerSync(teacher);
+const {error, data} = daj.registerSync(teacher);
 
 if(!error)
   console.log(data) //Success
@@ -90,22 +104,22 @@ const credentials : Credentials = {
  password: "Carlos.F.3232"
 };
 
-const user_token: Token = index_1.default.loginSync(credentials);
+const user_token: Token = daj.loginSync(credentials);
 
 console.log(user_token.token) //7d5a3b9e-572a-4f9b-b3f8-2c8e5d19a6e1
 //Los token son GUID (Globally Unique Identifier).
 
 //validando el token
-const isLogin: boolean = index_1.default.checkTokenSync(user_token.token);
+const newToken = Token.toToken("5a5ee1df-dfe9-a247-4491-fbb64c4da173");
+
+const isLogin: boolean = daj.checkTokenSync(newToken);
 console.log(isLogin) //true
 
 //deslogeandose
-const logout: boolean = index_1.default.logoutAsync(credentials);
+const logout: boolean = daj.logoutAsync(credentials);
 console.log(logout) //true
 
 //validando el token
-const isLogin: boolean = index_1.default.checkTokenSync(user_token.token);
-console.log(isLogin) //false
-
-*/
-
+const _isLogin: boolean = daj.checkTokenSync(Token.toToken(user_token.token as string));
+console.log(_isLogin) //false
+*/ 

@@ -5,15 +5,15 @@ import DajB from "./daj";
 export default class User extends DajB {
   user: string;
   password: string;
-  private _token: Token | null;
+  private _token: Token;
   
-  constructor(credential: Credential) {
+  constructor(user: string, password: string) {
     super();
-    this.user = credential.user;
-    this.password = credential.password;
-    this._token = null;
+    this.user = user;
+    this.password = password;
+    this._token = Token.empty();
   }
   
-  public get token() : Token | null { return this._token;}
+  public get token() : Token { return this._token;}
   private set token(token: Token){ this._token = token; }
 }

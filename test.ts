@@ -1,6 +1,29 @@
+import { errors } from "./src/errors";
 import daj, { DajB, User, Data, Error, Response, Credentials, Token } from "./index";
 
-//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------
+//Test get all 
+daj.getAll((error: Error, data: Data) => {
+ console.log("Test get all / not data access: ") 
+ if(error === errors.notDataAccess("readFile", 12) && data === null) {
+  console.log(true)
+ }
+ else console.log(false)
+});
+
+console.log("------------------------------------") 
+
+const responseGetAllSync = daj.getAllSync();
+console.log("Test get all Sync / not data access: ") 
+ if(responseGetAllSync.error === errors.notDataAccess("readFileSync",18) && responseGetAllSync.data === null) {
+  console.log(true)
+ }
+ else console.log(false)
+
+console.log("------------------------------------") 
+
+//-------------------------------------------------------
+//Test get 
 
 class Persona extends DajB {
  name:string;
@@ -12,51 +35,102 @@ class Persona extends DajB {
  }
 }
 
-const person1 = new Persona("luis",28);
-const person2 = new Persona("luis",28);
-const person3 = new Persona("luis",28);
+daj.get((error: Error, data: Data) => {
+ console.log("Test get / not data access: ") 
+ if(error === errors.notDataAccess("readFile", 12) && data === null) {
+  console.log(true)
+ }
+ else console.log(false)
+}, Persona.getInstance());
 
-const callback = (error: Error, data: Data) => {
- console.log("callback: "+ error)
- console.log("callback: "+ JSON.stringify(data));
+console.log("------------------------------------") 
+
+const responseGetAllSync = daj.getSync(Persona.getInstance());
+console.log("Test get Sync / not data access: ") 
+ if(responseGetAllSync.error === errors.notDataAccess("readFileSync",18) && responseGetAllSync.data === null) {
+  console.log(true)
+ }
+ else console.log(false)
+
+console.log("------------------------------------") 
+
+//-------------------------------------------------------
+//Test get 
+
+daj.getByKey(callback);
+
+console.log("------------------------------------") 
+
+const response = daj.getByKeySync(person1);
+
+console.log("------------------------------------") 
+
+/*
+
+class Persona extends DajB {
+ name:string;
+ age: number;
+ constructor(name: string,age: number) {
+  super();
+  this.name = name;
+  this.age = age;
+ }
 }
 
-daj.post(callback, person1);
-// const response = daj.postSync(person1);
+class Auto extends DajB {
+ marca:string;
+ age: number;
+ color: string;
+ constructor(marca: string,age: number, color: string) {
+  super();
+  this.marca = marca;
+  this.age = age;
+  this.color = color;
+ }
+}
 
-// daj.put(callback, person1);
-// const response = daj.postSync(person1);
+const profesor = new Persona("Jose",31);
+const policia = new Persona("Carlos",28);
+const bombero = new Persona("Manuel",23);
 
-// daj.delete(callback, person1);
-// const response = daj.deleteSync(person1);
+const callback = 
 
-// daj.getAll(callback);
-// const response = daj.getAllSync();
+daj.post(callback, person1); 
+const response = daj.postSync(person1);
 
-// const response = daj.get(callback);
-// const response = daj.getSync(person1);
-// const response = daj.getByKey(callback);
-// const response = daj.getByKeySync(person1);
+daj.put(callback, person1);
+const response = daj.postSync(person1);
+
+daj.delete(callback, person1);
+const response = daj.deleteSync(person1);
+
+
+
+const response = daj.get(callback);
+const response = daj.getSync(person1);
+const response = daj.getByKey(callback);
+const response = daj.getByKeySync(person1);
 
 console.log(JSON.stringify(response));
 
 // Register
-/*
+
 class Model_User extends User {
  name: string;
  lastName: string;
  age: number;
- credentials: Credentials;
+ 
  constructor(name: string, lastName: string, age: number, user:string, password:string) {
-  super()
+  const credential: Credentials = { user, password };
+  super(user, password)
+  
   this.name = name;
   this.lastName = lastName;
   this.age = age;
-  this.credentials = { user, password };
  }
 }
 
-const teacher: Model_User = new Model_User("Calor","Felipe",32, "Carlos_Felipe", "Carlos.F.3232");
+const teacher: Model_User = new Model_User("Luis","Frias",29, "LuisEduardoFrias", "EduarLuis941127");
 
 //registrando usuairo
 const {error, data} = daj.registerSync(teacher);
@@ -77,7 +151,9 @@ console.log(user_token.token) //7d5a3b9e-572a-4f9b-b3f8-2c8e5d19a6e1
 //Los token son GUID (Globally Unique Identifier).
 
 //validando el token
-const isLogin: boolean = daj.checkTokenSync(user_token.token);
+const newToken = Token.toToken("5a5ee1df-dfe9-a247-4491-fbb64c4da173");
+
+const isLogin: boolean = daj.checkTokenSync(newToken);
 console.log(isLogin) //true
 
 //deslogeandose
@@ -85,7 +161,6 @@ const logout: boolean = daj.logoutAsync(credentials);
 console.log(logout) //true
 
 //validando el token
-const isLogin: boolean = daj.checkTokenSync(user_token.token);
-console.log(isLogin) //false
-
+const _isLogin: boolean = daj.checkTokenSync(Token.toToken(user_token.token as string));
+console.log(_isLogin) //false
 */

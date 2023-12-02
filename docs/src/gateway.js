@@ -15,7 +15,26 @@ const writeFile_1 = __importDefault(require("./writeFile"));
 const writeFileSync_1 = __importDefault(require("./writeFileSync"));
 const createFile_1 = require("./createFile");
 //
+//
 class Daj {
+    //
+    //method get class name
+    //
+    getCN(obj) {
+        return Reflect.get(obj, "constructor").name;
+    }
+    //
+    //method get property
+    //
+    getPro(obj, pro) {
+        return Reflect.get(obj, pro);
+    }
+    //
+    //method get property class name
+    //
+    getProCN(data, _object) {
+        return Reflect.get(data, this.getCN(_object));
+    }
     //
     //method getAll
     //
@@ -32,33 +51,42 @@ class Daj {
     //method checkIsArray
     //
     checkIsArray(obj) {
-        let constructor_name = Reflect.get(obj, "constructor").name;
+        const constructor_name = this.getCN(obj);
         let objIsArray = false;
         Reflect.deleteProperty(obj, "constructor");
         if (constructor_name === "Array") {
             for (const key in obj) {
                 if (Reflect.ownKeys(Reflect.get(obj, key))[0] === "constructor") {
-                    constructor_name =
-                        Reflect.get(Reflect.get(Reflect.get(obj, key), "constructor"), "name");
                     objIsArray = true;
                     break;
                 }
             }
         }
-        return { objIsArray, constructor_name };
+        return objIsArray;
     }
     //
     //method register
     //
     registerSync(obj) {
         const { error, data: users } = this.getSync(user_1.default.getInstance());
-        if (!error && users) {
-            const usersExist = users.filter((u) => u.user === obj.user);
+        if (!error) {
+            let usersExist = [];
+            if (users)
+                usersExist = users.filter((u) => u.user === obj.user);
             if (usersExist.length === 1)
                 return { error: errors_1.errors.userNotExist("gateway", 77), data: null };
             return this.postSync(obj);
         }
         return { error, data: null };
+    }
+    //
+    //method check extende type
+    //
+    CheckExtendsType(obj) {
+        const extendsObject = Object.getPrototypeOf(Object.getPrototypeOf(obj)).constructor.name;
+        if (extendsObject === "User")
+            return extendsObject;
+        return this.getCN(obj);
     }
     //
     //method login
@@ -69,24 +97,30 @@ class Daj {
         if (!error && users) {
             const userExist = users.filter((u) => u.user === credential.user && u.password === credential.password);
             if (userExist.length === 1) {
-                Reflect.set(userExist[0], "token", new token_1.default());
+                Reflect.set(userExist[0], "_token", new token_1.default());
                 user.mapper(userExist[0]);
                 const { error, data } = this.putSync(user);
                 if (error)
-                    return null;
+                    return token_1.default.empty();
                 return user.token;
             }
         }
-        return null;
+        return token_1.default.empty();
     }
     //
     //method checkToken
     //
     checkTokenSync(token) {
         const { error, data: users } = this.getSync(user_1.default.getInstance());
-        if (error)
+        if (error && !users)
             return false;
-        const useExist = users.filter((u) => { var _a; return ((_a = u.token) === null || _a === void 0 ? void 0 : _a.token) === token.token; });
+        const useExist = users.filter((u) => {
+            var _a;
+            const newUser = user_1.default.getInstance();
+            newUser.mapper(u);
+            if (((_a = newUser === null || newUser === void 0 ? void 0 : newUser.token) === null || _a === void 0 ? void 0 : _a.token) === token.token)
+                return true;
+        });
         if (useExist.length === 1)
             return true;
         return false;
@@ -116,7 +150,7 @@ class Daj {
     get(callback, obj) {
         (0, readFile_1.default)((error, data) => {
             if (!error) {
-                callback(null, Reflect.get(data, Reflect.get(obj, "constructor").name));
+                callback(null, this.getProCN(data, obj));
             }
             else {
                 callback(error, null);
@@ -131,7 +165,7 @@ class Daj {
         if (!error)
             return {
                 error: null,
-                data: Reflect.get(data, Reflect.get(obj, "constructor").name)
+                data: this.getProCN(data, obj)
             };
         return { error, data: null };
     }
@@ -141,7 +175,7 @@ class Daj {
     getByKey(callback, obj, key) {
         (0, readFile_1.default)((error, data) => {
             if (!error) {
-                const objects = Reflect.get(data, Reflect.get(obj, "constructor").name);
+                const objects = this.getProCN(data, obj);
                 let isnotfound = true;
                 for (let props in objects) {
                     const _obj_ = Reflect.get(objects, props);
@@ -166,7 +200,7 @@ class Daj {
     getByKeySync(obj, key) {
         const { error, data } = (0, readFileSync_1.default)();
         if (!error) {
-            const value = Reflect.get(data, Reflect.get(obj, "constructor").name);
+            const value = this.getProCN(data, obj);
             for (let props in value) {
                 const _obj_ = Reflect.get(value, props);
                 if (Reflect.get(_obj_, "key") === key) {
@@ -184,7 +218,8 @@ class Daj {
     //method post
     //
     post(callback, obj) {
-        const { objIsArray, constructor_name } = this.checkIsArray(obj);
+        const objIsArray = this.checkIsArray(obj);
+        const constructor_name = this.CheckExtendsType(obj);
         (0, createFile_1.createFile)((error, data) => {
             let allData = data === null || typeof data === "object" ? data : {};
             function setAllData(objData, isNewProtype = false) {
@@ -251,7 +286,8 @@ class Daj {
     //method post async
     //
     postSync(obj) {
-        const { objIsArray, constructor_name } = this.checkIsArray(obj);
+        const objIsArray = this.checkIsArray(obj);
+        const constructor_name = this.CheckExtendsType(obj);
         const { error, data } = (0, createFile_1.createFileSync)(this);
         let allData = data === null || typeof data === "object" ? data : {};
         if (error !== null)
@@ -267,7 +303,7 @@ class Daj {
                     allData = auxAllData;
             }
             catch (err) {
-                console.log(err);
+                // console.log(err);
                 //Todo este valor de retorno, se esta tomado en cuenta
                 return { error: errors_1.errors.notAdd("gateway", 323), data: null };
             }
@@ -317,7 +353,8 @@ class Daj {
     //method put
     //
     put(callback, obj) {
-        const { objIsArray, constructor_name } = this.checkIsArray(obj);
+        const objIsArray = this.checkIsArray(obj);
+        const constructor_name = this.CheckExtendsType(obj);
         if (objIsArray) {
             callback(errors_1.errors.arrayNot("gateway", 373), null);
         }
@@ -371,11 +408,11 @@ class Daj {
     //method put async
     //
     putSync(obj) {
-        const { objIsArray, constructor_name } = this.checkIsArray(obj);
+        const objIsArray = this.checkIsArray(obj);
+        const constructor_name = this.CheckExtendsType(obj);
         if (objIsArray) {
             return { error: errors_1.errors.arrayNot("gateway", 432), data: null };
         }
-        Reflect.deleteProperty(obj, "constructor");
         function replaceEleOfArray(objToReplace) {
             for (const key in objToReplace) {
                 if (Reflect.get(objToReplace, key).key == Reflect.get(obj, "key")) {
@@ -417,7 +454,7 @@ class Daj {
     //method delete
     //
     delete(callback, obj) {
-        let constructor_name = Reflect.get(obj, "constructor").name;
+        let constructor_name = this.getCN(obj);
         Reflect.deleteProperty(obj, "constructor");
         this.getAll((error, allData) => {
             function setAllData(objData) {
@@ -462,7 +499,7 @@ class Daj {
     //method  delete async
     //
     deleteSync(obj) {
-        let constructor_name = Reflect.get(obj, "constructor").name;
+        let constructor_name = this.getCN(obj);
         Reflect.deleteProperty(obj, "constructor");
         const { error, data: allData } = this.getAllSync();
         if (error !== null)
