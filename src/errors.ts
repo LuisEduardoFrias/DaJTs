@@ -15,7 +15,7 @@ export const errors = {
    return `DaJ; ${ IS_DEVELOPMENT && `${file}, row?: ${row}` } Error: 'key' is not found.`
   },
   notDataAccess(file?: string, row?: number) { 
-   return `DaJ; ${ IS_DEVELOPMENT && `${file}, row?: ${row}` } Error: No access to data file?.`
+   return `DaJ; ${ IS_DEVELOPMENT && `${file}, row?: ${row}` } Error: No access to data file.`
   },
   arrayNot(file?: string, row?: number) { 
    return `DaJ; ${ IS_DEVELOPMENT && `${file}, row?: ${row}` } Error: Arrays are not supported in a PUT operation.`

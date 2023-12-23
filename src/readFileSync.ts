@@ -10,7 +10,7 @@ export default function readFileSync(): Response {
   try {
      return { error: null, data: JSON.parse(desencript(data.toString())) };
   } catch (err:any) {
-   return { error: errors.notData("readFileSync", 14), data: null };
+   return { error: errors.notData("readFileSync", 13), data: null };
   }
  } catch (err:any) {
   return { error: errors.notDataAccess("readFileSync",18), data: null }; 

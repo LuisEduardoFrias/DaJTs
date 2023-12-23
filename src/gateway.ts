@@ -87,7 +87,10 @@ export default class Daj {
 				return { error: errors.userNotExist("gateway",77), data: null };
 
 			return this.postSync(obj);
+		} else {
+			return this.postSync(obj);
 		}
+		
 		return { error, data: null };
 	}
 	//
