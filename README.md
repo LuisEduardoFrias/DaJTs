@@ -38,7 +38,7 @@ The models that extend from the DajB acquire the following properties and method
 
 ```typescript
 
-import { DajB } from "./index";
+import { DajB } from "daj";
 
 class Person extends DajB {
   name: string;
@@ -87,7 +87,7 @@ Use the 'daj' class, which is an instance, with any of the methods that are simi
 
 ```typescript
 
-import daj, { Response } from "./index";
+import daj, { Response } from "daj";
 
 const doctor = new Person("Jose", 32);
 const response: Response = daj.postSync(doctor);
@@ -102,7 +102,7 @@ console.log(data); // Success
 
 ```typescript
 
-import daj, { Error, Data } from "./index";
+import daj, { Error, Data } from "daj";
 
 const callback = (error: Error, data: Data) => {
   console.log(error); // null
@@ -129,7 +129,7 @@ Some methods are provided to simplify the registration:
 **Examples:**
 ```typescript
 
-import daj, { User, Response, Credentials, Token } from "./index";
+import daj, { User, Response, Credentials, Token } from "daj";
 
 class Model_User extends User {
   name: string;
@@ -219,7 +219,7 @@ Los modelos que extiendan del DajB arquiere la siquiente propiedad y metodos.
 
 ````typescript
 
-import { DajB } from "./index";
+import { DajB } from "daj";
 
 class Person extends DajB {
   name: string;
@@ -258,7 +258,7 @@ Usa la clase 'daj', la importación es una instancia, con cualquiera de los mét
 
 ```typescript
 
-import daj, { Response } from "./index";
+import daj, { Response } from "daj";
 
 const doctor = new Person("Jose", 32);
 const response: Response = daj.postSync(doctor);
@@ -274,7 +274,7 @@ console.log(data); // Success
 
 ```typescript
 
-import daj, { Error, Data } from "./index";
+import daj, { Error, Data } from "daj";
 
 const callback = (error: Error, data: Data) => {
   console.log(error); // null
@@ -296,7 +296,7 @@ Métodos de Registro Simplificado
 **Ejemplo:**
 ```typescript
 
-import daj, { User, Response, Credentials, Token } from "./index";
+import daj, { User, Response, Credentials, Token } from "daj";
 
 class Model_User extends User {
   name: string;
