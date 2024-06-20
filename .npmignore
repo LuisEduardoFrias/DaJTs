@@ -1,0 +1,9 @@
+dist/
+coverage
+node_modules
+.gitignore
+test.ts
+test.js
+tsconfig.json
+yarn.lock
+package-lock.json

@@ -1,5 +1,4 @@
 datafile.daj.db
-docs/
 
 # Logs
 logs
@@ -44,7 +43,8 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
-
+docs/
+dist/
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 
