@@ -6,8 +6,8 @@
     /* Visite https://aka.ms/tsconfig para leer más sobre este archivo */
     /* Proyectos */
     // "incremental": true,                              /* Guardar archivos .tsbuildinfo para permitir la compilación incremental de proyectos. */
-    "composite": true /* Habilitar restricciones que permiten que un proyecto TypeScript se utilice con referencias de proyecto. */,
-    "tsBuildInfoFile": "./.tsbuildinfo" /* Especificar la ruta al archivo de compilación incremental .tsbuildinfo. */,
+    ///"composite": true /* Habilitar restricciones que permiten que un proyecto TypeScript se utilice con referencias de proyecto. */,
+    //"tsBuildInfoFile": "./.tsbuildinfo" /* Especificar la ruta al archivo de compilación incremental .tsbuildinfo. */,
     // "disableSourceOfProjectReferenceRedirect": true,  /* Deshabilitar la preferencia de archivos fuente en lugar de archivos de declaración al referenciar proyectos compuestos. */
     // "disableSolutionSearching": true,                 /* Optar un proyecto por no verificar referencias a múltiples proyectos al editar. */
     // "disableReferencedProjectLoad": true,             /* Reducir la cantidad de proyectos cargados automáticamente por TypeScript. */
@@ -55,7 +55,7 @@
     // "checkJs": true,                                  /* Habilitar la generación de informes de error en archivos JavaScript verificados por tipo. */
     // "maxNodeModuleJsDepth": 1,
     /* Emit */
-    "declaration": true /* Generar archivos .d.ts a partir de archivos TypeScript y JavaScript en su proyecto. */,
+    //"declaration": true /* Generar archivos .d.ts a partir de archivos TypeScript y JavaScript en su proyecto. */,
     // "declarationMap": true,                           /* Crear sourcemaps para archivos .d.ts. */
     //"emitDeclarationOnly": true /* Solo emitir archivos .d.ts y no archivos JavaScript. */,
     // "sourceMap": true,                                /* Crear archivos de mapa fuente para archivos JavaScript emitidos. */
@@ -82,7 +82,7 @@
     /* Interop Constraints */
     // "isolatedModules": true,                          /* Asegurar que cada archivo se pueda transpilar de forma segura sin depender de otras importaciones. */
     // "verbatimModuleSyntax": true,                     /* No transformar ni omitir ninguna importación o exportación que no esté marcada como solo de tipo, asegurando que se escriban en el formato del archivo de salida según la configuración 'module'. */
-    "allowSyntheticDefaultImports": true /* Permitir 'import x from y' cuando un módulo no tiene una exportación predeterminada. */,
+    //"allowSyntheticDefaultImports": true /* Permitir 'import x from y' cuando un módulo no tiene una exportación predeterminada. */,
     //"esModuleInterop": true /* Emitir JavaScript adicional para facilitar el soporte de la importación de módulos CommonJS. Esto habilita 'allowSyntheticDefaultImports' para compatibilidad de tipo. */,
     // "preserveSymlinks": true,                         /* Deshabilitar la resolución de enlaces simbólicos a su ruta real. Esto se correlaciona con el mismo indicador en node. */
     "forceConsistentCasingInFileNames": true /* Asegurar que la mayúscula y minúscula sean correctas en las importaciones. */,
