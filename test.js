@@ -1,20 +1,21 @@
-const daj = require("./dist/index.js");
-const { DajB } = require("./dist/index.js");
+import daj, { DajB } from './dist/index.js';
 
 class Persona extends DajB {
-    constructor(name, age) {
-        super();
-        this.name = name;
-        this.age = age;
-    }
+  constructor(name, age) {
+    super();
+    this.name = name;
+    this.age = age;
+  }
 }
 
-const profesor = new Persona("Jose", 31);
+const profesor = new Persona('Jose', 31);
+console.log('hshs');
 
-const d = new daj();
+daj.verify();
+/*
+const response1 = daj.postSync(profesor);
+console.log('post sync:', JSON.stringify(response1));
 
-const response1 = d.postSync(profesor);
-console.log("post sync:", JSON.stringify(response1));
-
-const response2 = d.getSync(profesor);
-console.log("get sync:", JSON.stringify(response2));
+const response2 = daj.getSync(profesor);
+console.log('get sync:', JSON.stringify(response2));
+*/

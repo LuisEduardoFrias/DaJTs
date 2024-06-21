@@ -1,5 +1,5 @@
 "use strict";
-import { IS_DEVELOPMENT } from '../config';
+import { IS_DEVELOPMENT } from '../config.js';
 
 export const errors = {
   notAdd(file?: string, row?: number) { 

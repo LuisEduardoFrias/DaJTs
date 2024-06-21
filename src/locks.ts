@@ -1,7 +1,7 @@
 /** @format */
 "use strict";
 import crypto from "crypto";
-import { LOCK } from '../config';
+import { LOCK } from '../config.js';
 import { Buffer } from "buffer";
 
 const key = "h@u37.jd7J&#8Jsi^##>(+.:#hshqpb";

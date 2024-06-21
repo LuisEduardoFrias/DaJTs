@@ -1,6 +1,6 @@
 "use strict";
  
-import { Guid } from "guid-typescript";
+import { Guid } from 'guid-typescript'
 
 //Data Archive Json
 export default abstract class DajB {

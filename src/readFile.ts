@@ -1,8 +1,8 @@
-import { encript, desencript } from "./locks";
-import { DB_NAME } from '../config';
-import { errors } from "./errors";
+import { /*encript,*/ desencript } from "./locks.js";
+import { DB_NAME } from '../config.js';
+import { errors } from "./errors.js";
+import {Callback} from "./models/callback.js";
 import fs from "fs";
-import {Callback} from "./models/callback";
 //
 export default function readFile (callback: Callback) : void
 {

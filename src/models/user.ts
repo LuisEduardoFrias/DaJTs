@@ -1,6 +1,6 @@
-import Credential from "./credential";
-import Token from "./token";
-import DajB from "./daj";
+//import Credential from './credential.js'
+import Token from './token.js'
+import DajB from './daj.js'
 //
 export default class User extends DajB {
   user: string;

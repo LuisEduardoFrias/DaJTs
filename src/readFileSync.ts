@@ -1,7 +1,7 @@
-import { encript, desencript } from "./locks"; 
-import { DB_NAME } from '../config';
-import { errors } from "./errors"; 
-import Response from "./models/response"; 
+import { /*encript,*/ desencript } from './locks.js'; 
+import { DB_NAME } from '../config.js';
+import { errors } from './errors.js'; 
+import Response from './models/response.js'; 
 import fs from "fs";
 
 export default function readFileSync(): Response { 

@@ -1,11 +1,11 @@
-import DajB from "./src/models/daj"; 
-import Daj from "./src/gateway"; 
-import User from "./src/models/user"; 
-import Token from "./src/models/token"; 
-import Credentials from "./src/models/credential";
-import Response, { Data, Error } from "./src/models/response";
-import {Callback} from "./src/models/callback";
+import DajB from './src/models/daj.js';
+import Daj from './src/gateway.js';
+import User from './src/models/user.js';
+import Token from './src/models/token.js';
+import Credentials from './src/models/credential.js';
+import Response, { Data, Error } from './src/models/response.js';
+import { Callback } from './src/models/callback.js';
 
 const daj = new Daj();
 export default daj;
-export { DajB, User, Token, Credentials, Response, Callback, Data, Error};
+export { DajB, User, Token, Credentials, Response, Callback, Data, Error };

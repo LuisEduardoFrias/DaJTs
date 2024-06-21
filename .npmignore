@@ -1,9 +1,11 @@
-dist/
-coverage
 node_modules
+src/
 .gitignore
+config.ts
+index.ts
+package-lock.json
 test.ts
 test.js
 tsconfig.json
 yarn.lock
-package-lock.json
+coverage
