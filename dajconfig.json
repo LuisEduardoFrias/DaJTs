@@ -1,0 +1,5 @@
+{
+  "IS_DEVELOPMENT": false,
+  "DB_NAME": "datafile",
+  "LOCK": false
+}

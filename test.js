@@ -1,5 +1,10 @@
 import daj, { DajB } from './dist/index.js';
 
+const log = (text, value) =>
+  text
+    ? console.log(text, JSON.stringify(value, null, 2))
+    : console.log(JSON.stringify(value, null, 2));
+
 class Persona extends DajB {
   constructor(name, age) {
     super();
@@ -8,14 +13,9 @@ class Persona extends DajB {
   }
 }
 
-const profesor = new Persona('Jose', 31);
-console.log('hshs');
+const profesor = new Persona('luis eduardo', 29);
 
-daj.verify();
-/*
-const response1 = daj.postSync(profesor);
-console.log('post sync:', JSON.stringify(response1));
+log('post: ', daj.postSync(profesor));
 
-const response2 = daj.getSync(profesor);
-console.log('get sync:', JSON.stringify(response2));
-*/
+log('get: ', daj.getSync(Persona.getInstance()));
+//log('get: ', daj.getByKeySync(Persona.getInstance(), 'jdjdhdh'));

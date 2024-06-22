@@ -1,11 +1,17 @@
 import { encript } from './locks.js';
-import { DB_NAME } from '../config.js';
+import readConfigFile from './readConfigFile.js';
 import { errors } from './errors.js';
 import { Callback } from './models/callback.js';
 import fs from 'fs';
-
+//
+const datafileName = readConfigFile()?.DB_NAME ?? 'datafile';
+const isDebelopment = readConfigFile()?.IS_DEVELOPMENT ?? false;
+const fullDataConfiFile = `./${datafileName}.daj.${
+  isDebelopment ? 'json' : 'db'
+}`;
+//
 export default function writeFile(data: object, callback: Callback): void {
-  fs.writeFile(DB_NAME, encript(JSON.stringify(data)), (err: any) => {
+  fs.writeFile(fullDataConfiFile, encript(JSON.stringify(data)), (err: any) => {
     if (err) {
       callback(errors.notDataAccess('writeFile', 11), null);
     } else {

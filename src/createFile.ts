@@ -5,13 +5,19 @@ import { errors } from './errors.js';
 import { Callback } from './models/callback.js';
 import Response from './models/response.js';
 import Daj from './gateway.js';
-import { DB_NAME } from '../config.js';
+import readConfigFile from './readConfigFile.js';
 //
 // createFile
 //
+const datafileName = readConfigFile()?.DB_NAME ?? 'datafile';
+const isDebelopment = readConfigFile()?.IS_DEVELOPMENT ?? false;
+const fullDataConfiFile = `./${datafileName}.daj.${
+  isDebelopment ? 'json' : 'db'
+}`;
+
 export function createFile(callback: Callback, daj: Daj): void {
-  if (!fs.existsSync(DB_NAME)) {
-    fs.appendFile(DB_NAME, '', (err: any) => {
+  if (!fs.existsSync(fullDataConfiFile)) {
+    fs.appendFile(fullDataConfiFile, '', (err: any) => {
       if (err) {
         callback(errors.notDataAccess('createFile', 17), null);
       } else {
@@ -27,9 +33,9 @@ export function createFile(callback: Callback, daj: Daj): void {
 //createFileAsync
 //
 export function createFileSync(daj: Daj): Response {
-  if (!fs.existsSync(DB_NAME)) {
+  if (!fs.existsSync(fullDataConfiFile)) {
     try {
-      fs.appendFileSync(DB_NAME, '');
+      fs.appendFileSync(fullDataConfiFile, '');
       console.log(`The data file does create.`);
       return { error: null, data: null };
     } catch (err: any) {
