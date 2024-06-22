@@ -13,7 +13,7 @@ class Persona extends DajB {
   }
 }
 
-const profesor = new Persona('luis eduardo', 29);
+const profesor = new Persona('jose', 24);
 
 log('post: ', daj.postSync(profesor));
 

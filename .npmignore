@@ -1,5 +1,9 @@
 node_modules
-src/
+dist
+!dist/*
+src
+!dist/src
+datafile.daj.db
 .gitignore
 config.ts
 index.ts
