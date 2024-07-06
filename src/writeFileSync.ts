@@ -1,14 +1,13 @@
 import { encript } from './locks.js';
 import readConfigFile from './readConfigFile.js';
+import { environment } from './models/environment.js';
 import { errors } from './errors.js';
 import Response from './models/response.js';
 import fs from 'fs';
 //
 const datafileName = readConfigFile()?.DB_NAME ?? 'datafile';
-const isDebelopment = readConfigFile()?.IS_DEVELOPMENT ?? false;
-const fullDataConfiFile = `./${datafileName}.daj.${
-  isDebelopment ? 'json' : 'db'
-}`;
+const isDebelopment = readConfigFile()?.ENVIRONMENT == environment.development;
+const fullDataConfiFile = `./${datafileName}.daj.${isDebelopment ? 'json' : 'db'}`;
 //
 export default function writeFileSync(data: object): Response {
   try {

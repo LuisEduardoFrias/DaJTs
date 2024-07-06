@@ -1,11 +1,10 @@
 /** @format */
 'use strict';
 import crypto from 'crypto';
-import readConfigFile from './readConfigFile.js';
+import {environment} from './models/environment.js';
 import { Buffer } from 'buffer';
 
 const key = 'h@u37.jd7J&#8Jsi^##>(+.:#hshqpb';
-
 /*
 utilizar mac adress para bloquear el dispocitivo donde se pueda desbloquear la
 db

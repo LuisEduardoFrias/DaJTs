@@ -1,13 +1,14 @@
 "use strict";
- 
-import { Guid } from 'guid-typescript'
+
+//import { Guid } from 'guid-typescript'
+import crypto from 'crypto';
 
 //Data Archive Json
 export default abstract class DajB {
   key: string;
 
   constructor(identity: boolean = true) {
-    if (identity) this.key = Guid.create().toString();
+    if (identity) this.key = crypto.randomUUID(); //Guid.create().toString();
     else this.key = "";
   }
 
@@ -15,11 +16,11 @@ export default abstract class DajB {
     Reflect.set(this, "constructor", {
       name: this.constructor.name,
     });
-    
+
     const _json: string = JSON.stringify(this);
-    
+
     // delete this.constructor;
-    
+
     return _json;
   }
 
@@ -31,7 +32,7 @@ export default abstract class DajB {
   public mapper(obj: object) {
     const keys = Reflect.ownKeys(obj);
     keys.forEach(key => {
-      Reflect.set(this, key, Reflect.get(obj,key));
+      Reflect.set(this, key, Reflect.get(obj, key));
     });
   }
 

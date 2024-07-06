@@ -1,0 +1,8 @@
+{
+  "ENVIRONMENT": "development",
+  "SALT_ROUNDS_D": 10,
+  "SALT_ROUNDS_P": 20,
+  "SALT_ROUNDS_T": 10,
+  "DB_NAME": "datafile",
+  "LOCK": false
+}

@@ -1,5 +1,6 @@
 /** @format */
 'use strict';
+import bcrypt from 'bcrypt';
 //
 import User from './models/user.js';
 import Token from './models/token.js';
@@ -24,7 +25,7 @@ export default class Daj {
   //
   //method get class name
   //
-  private getCN(obj: any) {
+  private getClassName(obj: any) {
     return Reflect.get(obj as object, 'constructor').name;
   }
   //
@@ -34,8 +35,8 @@ export default class Daj {
   //
   //method get property class name
   //
-  private getProCN(data: any, _object: any) {
-    return Reflect.get(data as object, this.getCN(_object));
+  private getPropertyClassName(data: any, _object: any) {
+    return Reflect.get(data as object, this.getClassName(_object));
   }
   //
   //method getAll
@@ -53,7 +54,8 @@ export default class Daj {
   //method checkIsArray
   //
   private checkIsArray(obj: Data): boolean {
-    const constructor_name: string = this.getCN(obj);
+    /*
+    const constructor_name: string = this.getClassName(obj);
 
     let objIsArray: boolean = false;
 
@@ -69,8 +71,8 @@ export default class Daj {
         }
       }
     }
-
-    return objIsArray;
+*/
+    return (typeof obj === "Array")//objIsArray;
   }
   //
   //method register
@@ -82,10 +84,10 @@ export default class Daj {
       let usersExist: User[] = [];
 
       if (users)
-        usersExist = (users as User[]).filter((u: User) => u.user === obj.user);
+        usersExist = (users as User[]).find((u: User) => u.userName === obj.userName);
 
-      if (usersExist.length === 1)
-        return { error: errors.userNotExist('gateway', 77), data: null };
+      if (usersExist)
+        return { error: errors.userExist('gateway', 77), data: null };
 
       return this.postSync(obj);
     } else {
@@ -104,7 +106,7 @@ export default class Daj {
 
     if (extendsObject === 'User') return extendsObject;
 
-    return this.getCN(obj);
+    return this.getClassName(obj);
   }
   //
   //method login
@@ -115,14 +117,15 @@ export default class Daj {
     const { error, data: users } = this.getSync(user);
 
     if (!error && users) {
-      const userExist = (users as User[]).filter(
-        (u: User) =>
-          u.user === credential.user && u.password === credential.password
-      );
+      const userExist = (users as User | null).find(
+        async (u: User) => {
+          return u.userName === credential.userName &&
+            (await bcrypt.compare(u.password, credential.password))
+        });
 
-      if (userExist.length === 1) {
-        Reflect.set(userExist[0], '_token', new Token());
-        user.mapper(userExist[0]);
+      if (userExist) {
+        Reflect.set(userExist, '_token', new Token());
+        user.mapper(userExist);
         const { error /*, data*/ } = this.putSync(user);
 
         if (error) return Token.empty();
@@ -159,13 +162,13 @@ export default class Daj {
     const { error, data: users } = this.getSync(user);
 
     if (!error && users) {
-      const useExist = (users as User[]).filter(
-        (u: User) => u.user === credential.user
+      const useExist = (users as User).find(
+        (u: User) => u.userName === credential.userName
       );
 
-      if (useExist.length === 1) {
-        Reflect.set(useExist[0], 'token', null);
-        user.mapper(useExist[0]);
+      if (useExist) {
+        Reflect.set(useExist, 'token', null);
+        user.mapper(useExist);
         const { error /*, data */ } = this.putSync(user);
 
         if (error) return false;
@@ -182,7 +185,7 @@ export default class Daj {
   public get(callback: Callback, obj: object) {
     readFile((error: Error, data: Data) => {
       if (!error) {
-        callback(null, this.getProCN(data, obj));
+        callback(null, this.getPropertyClassName(data, obj));
       } else {
         callback(error, null);
       }
@@ -197,7 +200,7 @@ export default class Daj {
     if (!error)
       return {
         error: null,
-        data: this.getProCN(data, obj),
+        data: this.getPropertyClassName(data, obj),
       };
 
     return { error, data: null };
@@ -208,7 +211,7 @@ export default class Daj {
   public getByKey(callback: Callback, obj: object, key: string) {
     readFile((error: Error, data: Data) => {
       if (!error) {
-        const objects: object = this.getProCN(data, obj);
+        const objects: object = this.getPropertyClassName(data, obj);
 
         let isnotfound = true;
 
@@ -236,7 +239,7 @@ export default class Daj {
     const { error, data } = readFileSync();
 
     if (!error) {
-      const value = this.getProCN(data, obj);
+      const value = this.getPropertyClassName(data, obj);
 
       for (let props in value) {
         const _obj_: object = Reflect.get(value, props);
@@ -292,7 +295,7 @@ export default class Daj {
 
       if (error === null) {
         if (allData !== null) {
-          const specificObj: Array<object> = Reflect.get(
+          let specificObj: Array<object> = Reflect.get(
             allData as object,
             constructor_name
           );
@@ -301,6 +304,11 @@ export default class Daj {
             if (objIsArray && Array.isArray(obj)) {
               specificObj.push(...obj);
             } else {
+              if (!Array.isArray(specificObj)) {
+                const aux = [specificObj];
+                specificObj = aux;
+              }
+
               specificObj.push(obj);
             }
             isError = !setAllData(specificObj);
@@ -381,6 +389,11 @@ export default class Daj {
         if (objIsArray && Array.isArray(obj)) {
           specificObj.push(...obj);
         } else {
+          if (!Array.isArray(specificObj)) {
+            const aux = [specificObj];
+            specificObj = aux;
+          }
+
           specificObj.push(obj);
         }
 
@@ -402,15 +415,15 @@ export default class Daj {
 
     const { error: wfsError, data: wfsData } = writeFileSync(allData as object);
 
-    if (!wfsError) {
-      return {
-        error: null,
-        data: wfsData,
-      };
-    } else {
+    if (wfsError) {
       //console.log(error);
       return { error: errors.notData('gateway', 363), data: null };
     }
+
+    return {
+      error: null,
+      data: wfsData,
+    };
   }
   //
   //method put
@@ -533,7 +546,7 @@ export default class Daj {
   //method delete
   //
   public delete(callback: Callback, obj: object) {
-    let constructor_name = this.getCN(obj);
+    let constructor_name = this.getClassName(obj);
 
     Reflect.deleteProperty(obj, 'constructor');
 
@@ -589,7 +602,7 @@ export default class Daj {
   //method  delete async
   //
   public deleteSync(obj: object): Response {
-    let constructor_name = this.getCN(obj);
+    let constructor_name = this.getClassName(obj);
 
     Reflect.deleteProperty(obj, 'constructor');
 

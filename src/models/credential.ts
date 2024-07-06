@@ -1,5 +1,5 @@
 /**  */
 export default interface Credentials {
-	user: string;
+	userName: string;
 	password: string;
 }

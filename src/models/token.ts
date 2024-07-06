@@ -1,10 +1,11 @@
-import { Guid } from 'guid-typescript'
+//import { Guid } from 'guid-typescript'
+import crypto from 'crypto';
 
 export default class Token {
   token: string | null;
 
   constructor() {
-    this.token = Guid.create().toString();
+    this.token = crypto.randomUUID(); //Guid.create().toString();
   }
 
   static empty() {

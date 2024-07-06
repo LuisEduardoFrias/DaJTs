@@ -6,14 +6,13 @@ import { Callback } from './models/callback.js';
 import Response from './models/response.js';
 import Daj from './gateway.js';
 import readConfigFile from './readConfigFile.js';
+import { environment } from './models/environment.js'
 //
 // createFile
 //
 const datafileName = readConfigFile()?.DB_NAME ?? 'datafile';
-const isDebelopment = readConfigFile()?.IS_DEVELOPMENT ?? false;
-const fullDataConfiFile = `./${datafileName}.daj.${
-  isDebelopment ? 'json' : 'db'
-}`;
+const isDebelopment = readConfigFile()?.ENVIRONMENT == environment.development;
+const fullDataConfiFile = `./${datafileName}.daj.${isDebelopment ? 'json' : 'db'}`;
 
 export function createFile(callback: Callback, daj: Daj): void {
   if (!fs.existsSync(fullDataConfiFile)) {

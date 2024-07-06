@@ -23,6 +23,18 @@ The package exposes the following classes, interfaces, and types:
 - `Data`: object, string, null
 - `Error`: string, null
 
+### dajconfig.json file 
+```json
+{
+  "ENVIRONMENT": "development", //production, test
+  "SALT_ROUNDS_D": 10, //has lever
+  "SALT_ROUNDS_P": 20,
+  "SALT_ROUNDS_T": 10,
+  "DB_NAME": "datafile",
+  "LOCK": false
+}
+```
+
 ## ***Create the models using the abstract class 'DajB'..**
 
 The models that extend from the DajB acquire the following properties and methods:
