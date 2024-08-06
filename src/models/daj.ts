@@ -5,11 +5,11 @@ import crypto from 'crypto';
 
 //Data Archive Json
 export default abstract class DajB {
-  key: string;
+//  key: string;
 
   constructor(identity: boolean = true) {
     if (identity) this.key = crypto.randomUUID(); //Guid.create().toString();
-    else this.key = "";
+   // else this.key = "";
   }
 
   public json() {
