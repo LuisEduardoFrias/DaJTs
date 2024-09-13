@@ -33,13 +33,17 @@
     "baseUrl": "./" /* Especificar el directorio base para resolver nombres de módulos no relativos. */,
     "paths": {
       /* Especificar un conjunto de entradas que vuelven a mapear las importaciones a ubicaciones de búsqueda adicionales. */
-      "guid-typescript": ["node_modules/guid-typescript/dist/guid.d.ts"]
+      "guid-typescript": [
+        "node_modules/guid-typescript/dist/guid.d.ts"
+      ]
     },
     // "rootDirs": [],                                   /* Permitir que varias carpetas se traten como una al resolver módulos. */
     "typeRoots": [
       "node_modules/@types"
     ] /* Especificar varias carpetas que actúan como './node_modules/@types'. */,
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
     /* Especificar nombres de paquetes de tipos que se incluirán sin ser referenciados en un archivo fuente. */
     // "allowUmdGlobalAccess": true,                     /* Permitir el acceso a los globales UMD desde los módulos. */
     // "moduleSuffixes": [],                             /* Lista de sufijos de nombres de archivo a buscar al resolver un módulo. */
@@ -111,5 +115,18 @@
     "skipLibCheck": true /* Omitir la comprobación de tipos de todos los
     archivos .d.ts. */
   },
-  "exclude": ["test.ts"]
+  "exclude": [
+    "test.ts",
+    "index.ts",
+    "src2/createFile.ts",
+    "src2/errors.ts",
+    "src2/gateway.ts",
+    "src2/locks.ts",
+    "src2/models/daj.ts",
+    "src2/models/user.ts",
+    "src2/readFile.ts",
+    "src2/readFileSync.ts",
+    "src2/writeFile.ts",
+    "src2/writeFileSync.ts",
+  ]
 }
