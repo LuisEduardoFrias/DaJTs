@@ -1,3 +1,18 @@
+
+import wolfPackCreate from "./src/wolf.js";
+import Alpha from "./src/alpha.js";
+
+export { Alpha, wolfPackCreate }
+
+const wolf = {
+  Alpha,
+  wolfPackCreate
+}
+
+export default wolf;
+
+
+/*
 import DajB from './src/models/daj.js';
 import Daj from './src/gateway.js';
 import User from './src/models/user.js';
@@ -9,3 +24,4 @@ import { Callback } from './src/models/callback.js';
 const daj = new Daj();
 export default daj;
 export { DajB, User, Token, Credentials, Response, Callback, Data, Error };
+*/
