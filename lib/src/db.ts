@@ -12,6 +12,7 @@ type props = { prop: string, value?: string[] };
 export default class Db<T extends Alpha> {
   className: string;
   dbmode: dbMode;
+  where: Array<{ [key: string | number | symbol]: any }>
 
   constructor(className: string, dbmode: dbMode) {
     this.className = className;
@@ -59,13 +60,63 @@ export default class Db<T extends Alpha> {
     return dataFile;
   }
 
-  //
-  public getSync(where?: T & Where): T[] {
-    const dataFile = this.getData();
+  private validateAndClean(requiredProps, obj): { [key: string]: object } {
+    const cleanObj = {};
+    const allObj = {};
 
-    const objs = dataFile.data;
-    //  const objectStructure = dataFile.objectStructure.filter((obj: ObjectStructure) => obj.key === this.className) as ObjectStructure;
-    const specificObj = objs[this.className];
+    requiredProps.forEach(prop => {
+      if (prop.prop === '_reference' && prop?.value) {
+        prop?.value.forEach((key: string) => {
+
+          if (!Reflect.ownKeys(obj).includes(firstLowerCase(key))) {
+            const error = new Error(`The '${firstLowerCase(key)}' reference not exists in the object type ${this.className}.`);
+            throw error;
+          } else {
+            if (obj[firstLowerCase(key)] === null || obj[firstLowerCase(key)] === undefined) {
+              const error = new Error(`The '${firstLowerCase(key)}' prop is required in the type '${obj.constructor.name}'.`);
+              throw error;
+            } else {
+              const ref = obj[firstLowerCase(key)];
+              const referred = {};
+              Reflect.set(referred, ref._referred, [obj.id]);
+              Reflect.set(ref, "_referred", referred);
+              Reflect.set(allObj, key.toString(), obj[firstLowerCase(key)]);
+              obj[firstLowerCase(key)] = obj[firstLowerCase(key)].id;
+            }
+          }
+        })
+      }
+
+      if (!obj.hasOwnProperty(prop.prop)) {
+        const error = new Error(`Missing required property: ${prop.prop}`);
+        throw error;
+      }
+
+      cleanObj[prop.prop] = obj[prop.prop];
+
+    });
+
+    if (cleanObj?._reference) {
+      delete cleanObj._reference
+    }
+
+    if (cleanObj?._referred) {
+      delete cleanObj._referred
+    }
+
+    Reflect.set(allObj, this.className, cleanObj);
+
+    return allObj;
+  }
+
+  //////////////////////////////
+  public Where(where: T & Where) {
+    this.where.push(where);
+    return this;
+  }
+
+  public getSync(where?: T & Where): T[] {
+    const specificObj = this.getData().data[this.className];
 
     if (!where) return specificObj as T[];
 
@@ -77,34 +128,58 @@ export default class Db<T extends Alpha> {
   }
 
   public getByIdSync(id: string) {
-    const dataFile = this.getData();
+    return (this.getData().data[this.className] as T[])
+      .find((obj: T) => obj.id === id)
+  }
 
-    const objs = dataFile.data;
-    // const objectStructure = dataFile.objectStructure.filter((obj: ObjectStructure) => obj.key === this.className) as ObjectStructure;
-    const specificObj = objs[this.className] as T[];
+  //TODO evaliar error
+  private ggg(dataFile, allObj) {
+    for (const className in allObj) {
+      if (dataFile.data[className]) {
 
-    return specificObj.find((obj: T) => obj.id === id)
+        if (this.className !== className) {
+
+          const index = dataFile.data[className]
+            .findIndex((obj: Alpha) => obj.id === allObj[className].id);
+
+          if (index >= 0) {
+            const referred = dataFile.data[className][index]._referred;
+            console.log('----------: \n', className);
+            console.log('----------: \n', JSON.stringify(allObj), '\n----------:\n');
+            console.log('----------: \n',allObj[className]._referred[this.className], '\n----------:\n');
+            referred[this.className].push(allObj[className]._referred[this.className].first());
+            dataFile.data[className][index]._referred = referred;
+            Reflect.deleteProperty(allObj, className);
+          }
+        }
+
+        if (allObj[className]) {
+          dataFile.data[className].push(allObj[className]);
+        }
+      } else {
+        Reflect.set(dataFile.data, className, [allObj[className]])
+      }
+    }
   }
 
   public postSync(obj: T) {
     const dataFile = this.getData();
 
-    const reference = dataFile.objectStructure[this.className].find((ob: props) => ob.prop === '_reference');
-   // const referred = dataFile.objectStructure[this.className].find((ob: props) => ob.prop === '_referred');
-
-    if (reference?.value) {
-      reference?.value.forEach((key: string) => {
-        if (!Reflect.ownKeys(obj).includes(firstLowerCase(key))) {
-          throw new Error(`The '${firstLowerCase(key)}' reference not exists in the bject type ${this.className}.`)
-        }
-      })
+    if (this.className !== obj.constructor.name) {
+      const error = new Error(`The '${obj.constructor.name}' type isn't missing following to '${this.className}' type.`);
+      throw error;
     }
 
-    if (dataFile.data[this.className]) {
-      dataFile.data[this.className].push(obj);
-    } else {
-      Reflect.set(dataFile.data, this.className, [obj])
+    const props = dataFile.objectStructure[this.className];
+
+    if (!props) {
+      const error = new Error(`The type '${this.className}' don't exists.`);
+      throw error;
     }
+
+    const allObj = this.validateAndClean(props, obj);
+
+    this.ggg(dataFile, allObj);
 
     overwriteFile(dataFile)
   }

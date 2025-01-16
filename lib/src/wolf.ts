@@ -2,6 +2,8 @@
 'use strict';
 import createFile from './create_file.js'
 import overwriteFile from './overwrite_file.js'
+import readConfigFile from './read_config_file.js';
+import { environment } from './models/environment.js';
 import { dbMode } from './models/db_mode.js';
 import Db from './db.js';
 import Alpha from './alpha.js';
@@ -28,41 +30,44 @@ class WolfPack {
     function initialice() {
       WolfPack.instance = new WolfPack();
 
-      createFile();
+      const isCreate = createFile();
 
       const files: object = {};
 
       wolves.forEach((item: Alpha) => {
-
         const instance = new item();
         const className = instance.constructor.name;
 
         const db = new Db<typeof item>(className, dbmode);
-
-        const properties = [];
-
-        for (const prop in instance) {
-          if (prop === '_reference' || prop === '_referred') {
-            properties.push({ prop, value: instance[prop] })
-          } else {
-            properties.push({ prop })
-          }
-        }
-
         Reflect.set(WolfPack.instance, className, db);
-        Reflect.set(files, className, properties);
+
+        if (!isCreate || update) {
+          const properties = [];
+
+          for (const prop in instance) {
+            if (prop === '_reference' || prop === '_referred') {
+              properties.push({ prop, value: instance[prop] })
+            } else {
+              properties.push({ prop })
+            }
+          }
+
+          Reflect.set(files, className, properties);
+        }
       })
 
-      overwriteFile({ objectStructure: files, data: {} });
+      if (!isCreate || update) {
+        overwriteFile({ objectStructure: files, data: {} });
 
-      console.log(`Db created.`);
+        console.log(`Db created.`);
+      }
     }
 
     if (!WolfPack.instance) {
       initialice();
     }
 
-    if (update) {
+    if (update && readConfigFile.ENVIRONMENT === environment.development) {
       initialice();
     }
 

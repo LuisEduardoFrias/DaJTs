@@ -18,8 +18,8 @@ export default function readConfigFile(): ConfigFull {
   const conf: ConfigFull = {
     ENVIRONMENT: environment.development,
     SALT_ROUNDS_D: 123,
-    SALT_ROUNDS_P: 208645,
-    SALT_ROUNDS_T: 346347900863,
+    SALT_ROUNDS_P: 1234,
+    SALT_ROUNDS_T: 123456,
     DB_FILE_PATH: `${join(__dirname, 'dbt.json')}`,
     ALGORITHM: 'aes-256-cbc',
     SECRETKEY: randomBytes(32),
